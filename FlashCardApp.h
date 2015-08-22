@@ -32,8 +32,9 @@ public:
     FlashCardApp();
     virtual void run();
     void clearScreen();
-    void addString(string s, unsigned char red, unsigned char green, unsigned char blue);
+    void addTextBox(string s, unsigned char red, unsigned char green, unsigned char blue);
     virtual void keyPressed();
+    void addCardValue(string s) { cardValues.push_back(s); }
 private:
     GL_SDL_WindowManager *windowManager;
     SDLEventDispatcher *eventDispatcher;
@@ -45,6 +46,8 @@ private:
     string uname;
     string pword;
     bool userQuit;
+    vector<string> cardValues;
+    int currentStringIndex;
 };
 
 

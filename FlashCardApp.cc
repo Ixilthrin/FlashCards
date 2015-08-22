@@ -1,8 +1,10 @@
 #include "FlashCardApp.h"
 #include "TempBackground.h"
+#include "CardReader.h"
 
 FlashCardApp::FlashCardApp()
 {
+    currentStringIndex = 0;
     windowManager = new GL_SDL_WindowManager();
     eventDispatcher = new SDLEventDispatcher();
     eventDispatcher->setEventHandler(this);
@@ -17,7 +19,7 @@ void FlashCardApp::clearScreen()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void FlashCardApp::addString(string s, unsigned char red, unsigned char green, unsigned char blue)
+void FlashCardApp::addTextBox(string s, unsigned char red, unsigned char green, unsigned char blue)
 {
     strings.push_back(s);
 
@@ -28,7 +30,11 @@ void FlashCardApp::addString(string s, unsigned char red, unsigned char green, u
 
 void FlashCardApp::keyPressed()
 {
-    userQuit = true;
+    currentStringIndex++;
+    strings.clear();
+    textModels.clear();
+    if (currentStringIndex < cardValues.size()) 
+        addTextBox(cardValues[currentStringIndex], 0, 0, 0);
 }
 
 void FlashCardApp::run()
@@ -36,6 +42,10 @@ void FlashCardApp::run()
     string cardFile;
     cout << "file?\n";
     cin >> cardFile;
+
+    CardReader reader(cardFile);
+    reader.getFileContents();
+    reader.sendStringsToApp(this);
 
     windowManager->createWindow(screenWidth, screenHeight);
 
@@ -48,7 +58,7 @@ void FlashCardApp::run()
 
     init_background();
 
-    addString("Hit <ENTER> to begin", 0, 0, 0);
+    addTextBox(cardValues[currentStringIndex], 0, 0, 0);
 
     //ProjectManager projects;
     //projects.fetchProjects(this);
@@ -68,7 +78,7 @@ void FlashCardApp::run()
 
         eventDispatcher->pollEvents();
 
-        if (userQuit)
+        if (currentStringIndex >= cardValues.size())
             break;
 
         clearScreen();
