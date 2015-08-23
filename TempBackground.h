@@ -26,8 +26,10 @@ float maxZ = 2;
 GLuint cloudTexture;
 GLuint jetTexture;
 GLuint moonTexture;
+GLuint balloonTexture;
 
 void createMoonSurface();
+void createBalloonSurface();
 
 void init_background(void) {
 
@@ -72,6 +74,7 @@ void init_background(void) {
     SDL_FreeSurface(jetSurface);
 
     createMoonSurface();
+    createBalloonSurface();
 }
 
 void createMoonSurface()
@@ -103,6 +106,36 @@ void createMoonSurface()
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
     SDL_FreeSurface(moonSurface);
+}
+
+void createBalloonSurface()
+{
+    SDL_Surface* balloonSurface = IMG_Load("balloon.jpg");
+
+    GLubyte checkImage[balloonSurface->h][balloonSurface->w][4];
+    unsigned char *pixels = (unsigned char*) balloonSurface->pixels;
+
+   int index = 0;
+   for (int i = 0; i < balloonSurface->h; i++) {
+      for (int j = 0; j < balloonSurface->w; j++) {
+         unsigned char r = checkImage[i][j][0] = pixels[index++];
+         unsigned char g = checkImage[i][j][1] = pixels[index++];
+         unsigned char b = checkImage[i][j][2] = pixels[index++];
+         if (r > 240 && g > 240 && b > 240)
+             checkImage[i][j][3] = 0; 
+         else
+             checkImage[i][j][3] = 255;
+      }
+   }
+
+    glGenTextures(1, &balloonTexture);
+    glBindTexture(GL_TEXTURE_2D, balloonTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, balloonSurface->w, balloonSurface->h, 0, GL_RGBA,GL_UNSIGNED_BYTE, checkImage);
+
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+ 
+    SDL_FreeSurface(balloonSurface);
 }
 
 void transformMoon()
@@ -218,6 +251,50 @@ void drawJet()
     glEnd();
 }
 
+float balloonY = 20;
+float balloonX = 0;
+float balloonZ = 0;
+
+void transformBalloon()
+{ 
+    if (balloonY > 15)
+    {
+        balloonX = (float) (rand() % 30 - 15);
+        balloonZ = (float) (1 + rand() % 30);
+        balloonY = -15;
+    }
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(balloonX, balloonY, -balloonZ);
+    balloonY += .02;
+}
+
+void drawBalloon()
+{  
+    glBindTexture(GL_TEXTURE_2D, balloonTexture);
+    glEnable(GL_TEXTURE_2D);
+ 
+    glBegin(GL_QUADS);
+
+    float x = 1;
+    float y = 1;
+    float z = -7;
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(-x, y, z);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(-x, -y, z);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(x, -y, z);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(x, y, z);
+
+    glEnd();
+}
+
 void draw_background() 
 {
     transformClouds();
@@ -226,4 +303,6 @@ void draw_background()
     drawMoon();
     transformJet();
     drawJet();
+    transformBalloon();
+    drawBalloon();
 }
