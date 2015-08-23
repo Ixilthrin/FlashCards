@@ -32,8 +32,14 @@ void FlashCardApp::addTextBox(string s, unsigned char red, unsigned char green, 
     textModels.push_back(textModel);
 }
 
-void FlashCardApp::keyPressed()
+void FlashCardApp::keyPressed(SDLKey key)
 {
+    if (key == SDLK_ESCAPE)
+        userQuit = true;
+        
+    if (key != SDLK_RIGHT)
+        return;
+
     currentStringIndex++;
     strings.clear();
     textModels.clear();
@@ -115,6 +121,9 @@ void FlashCardApp::run()
     long previousTickCount = 0;
 
     while (1) {
+        if (userQuit)
+            break;
+
         long currentTickCount = SDL_GetTicks();
         long ticksSinceLastFrame = currentTickCount - previousTickCount;
         previousTickCount = currentTickCount;

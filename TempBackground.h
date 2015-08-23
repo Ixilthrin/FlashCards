@@ -266,7 +266,7 @@ void transformBalloon()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(balloonX, balloonY, -balloonZ);
-    balloonY += .02;
+    balloonY += .01;
 }
 
 void drawBalloon()

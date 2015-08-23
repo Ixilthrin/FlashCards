@@ -33,7 +33,7 @@ public:
     virtual void run();
     void clearScreen();
     void addTextBox(string s, unsigned char red, unsigned char green, unsigned char blue);
-    virtual void keyPressed();
+    virtual void keyPressed(SDLKey key);
     void addCardValue(string s) { cardValues.push_back(s); }
 private:
     GL_SDL_WindowManager *windowManager;

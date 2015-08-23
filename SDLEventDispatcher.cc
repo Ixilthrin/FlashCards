@@ -18,7 +18,8 @@ void SDLEventDispatcher::pollEvents()
 
         switch(sdlEvent.type) {
             case SDL_KEYDOWN:
-                keyDownEvent();
+                key = sdlEvent.key.keysym.sym;
+                keyDownEvent(key);
                 break;
 
             case SDL_KEYUP:
@@ -83,10 +84,10 @@ void SDLEventDispatcher::pollEvents()
     }
 }
 
-void SDLEventDispatcher::keyDownEvent()
+void SDLEventDispatcher::keyDownEvent(SDLKey key)
 {
     if (eventHandler) {
-        eventHandler->keyPressed();
+        eventHandler->keyPressed(key);
     }
 }
 
