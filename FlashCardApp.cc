@@ -27,7 +27,7 @@ void FlashCardApp::addTextBox(string s, unsigned char red, unsigned char green, 
 {
     strings.push_back(s);
 
-    TextModel *textModel = new TextModel(s.c_str(), 30, red, green, blue);
+    TextModel *textModel = new TextModel(s.c_str(), 20, red, green, blue);
     textModel->setPosition(0, 0);
     textModels.push_back(textModel);
 }
@@ -58,7 +58,6 @@ void FlashCardApp::run()
     {
         int choice = rand() % cardValues.size();
         int randomIndex = 2 * (int)(choice / 2);
-cout << choice << " : " << randomIndex << endl;
         if (find(indices.begin(), indices.end(), randomIndex) == indices.end())
         {
             indices.push_back(randomIndex);
