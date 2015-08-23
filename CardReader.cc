@@ -32,11 +32,7 @@ void CardReader::sendStringsToApp(FlashCardApp *app)
 
     d.Parse<0>(contents.c_str());
 
-cout << "parsed\n";
-
     const rapidjson::Value& strings = d["strings"];
-
-cout << "got strings\n";
 
     for (rapidjson::SizeType i = 0; i < strings.Size(); i++) 
     {

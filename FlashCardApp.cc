@@ -2,6 +2,10 @@
 #include "TempBackground.h"
 #include "CardReader.h"
 
+#include <algorithm>
+#include <math.h>
+#include <time.h>
+
 FlashCardApp::FlashCardApp()
 {
     currentStringIndex = 0;
@@ -39,6 +43,8 @@ void FlashCardApp::keyPressed()
 
 void FlashCardApp::run()
 {
+    srand(time(0));
+
     string cardFile;
     cout << "file?\n";
     cin >> cardFile;
@@ -46,6 +52,27 @@ void FlashCardApp::run()
     CardReader reader(cardFile);
     reader.getFileContents();
     reader.sendStringsToApp(this);
+
+    vector<int> indices;
+    while (indices.size() < cardValues.size())
+    {
+        int choice = rand() % cardValues.size();
+        int randomIndex = 2 * (int)(choice / 2);
+cout << choice << " : " << randomIndex << endl;
+        if (find(indices.begin(), indices.end(), randomIndex) == indices.end())
+        {
+            indices.push_back(randomIndex);
+            indices.push_back(randomIndex + 1);
+        }
+    }
+
+    vector<string> randomValues;
+    for (int i = 0; i < indices.size(); ++i)
+       randomValues.push_back(cardValues[indices[i]]);
+
+    cardValues.clear();
+    for (int i = 0; i < randomValues.size(); ++i)
+       cardValues.push_back(randomValues[i]);
 
     windowManager->createWindow(screenWidth, screenHeight);
 
