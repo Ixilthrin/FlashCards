@@ -38,7 +38,26 @@ void FlashCardApp::keyPressed()
     strings.clear();
     textModels.clear();
     if (currentStringIndex < cardValues.size()) 
-        addTextBox(cardValues[currentStringIndex], 0, 0, 0);
+    {
+        string s = cardValues[currentStringIndex];
+        int currentPosition = 0;
+        int totalLength = s.size();
+        int maxLength = 60;
+
+        while (totalLength - currentPosition > maxLength)
+        {
+            int subLength = maxLength;
+            while (subLength > 0 && s[currentPosition + subLength] != ' ')
+                subLength--;
+            if (subLength == 0)
+                subLength = maxLength;
+            addTextBox(s.substr(currentPosition, subLength), 0, 0, 0);
+            currentPosition += subLength;
+        }
+        while (s[currentPosition] == ' ' && currentPosition < totalLength)
+            currentPosition++;
+        addTextBox(s.substr(currentPosition, totalLength - currentPosition), 0, 0, 0);
+    }
 }
 
 void FlashCardApp::run()
@@ -114,8 +133,8 @@ void FlashCardApp::run()
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        float x = -.58;
-        float y = .44;
+        float x = -.50;
+        float y = .30;
 
         for (int i = 0; i < strings.size(); ++i)
         {
